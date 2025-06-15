@@ -14,8 +14,8 @@
     }
     h1 {
       color: #FFD700;
-      font-size: 2.2rem;
-      margin: 15px 0 5px;
+      font-size: 2rem;
+      margin: 10px 0 5px;
     }
     .subtitulo {
       color: white;
@@ -23,56 +23,42 @@
       margin-bottom: 8px;
     }
     .premios {
-      font-size: 0.95rem;
-      line-height: 1.5rem;
-      margin-bottom: 16px;
-      padding: 0 5px;
+      font-size: 0.9rem;
+      line-height: 1.4rem;
+      margin-bottom: 15px;
+      padding: 0 10px;
     }
     .user-info {
       display: flex;
       justify-content: space-around;
       font-size: 0.9rem;
-      margin: 10px 0 15px;
-      flex-wrap: wrap;
+      margin: 5px 0 10px;
     }
     .tablero {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
       justify-content: center;
       margin: 0 auto;
-      width: 95vw;
-      max-width: 600px;
+      max-width: 100vw;
+      padding: 0 5px;
     }
     .carta {
-      width: 100%;
-      padding-top: 130%;
-      position: relative;
+      width: 60px;
+      height: 85px;
       perspective: 800px;
     }
-    .inner {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      transform-style: preserve-3d;
-      transition: transform 0.9s;
-    }
-    .carta.abierta .inner {
-      transform: rotateY(180deg);
-    }
     .cara {
-      position: absolute;
       width: 100%;
       height: 100%;
+      position: absolute;
       backface-visibility: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 0.95rem;
-      border-radius: 10px;
+      font-size: 0.7rem;
+      border-radius: 8px;
       border: 2px solid yellow;
     }
     .frente {
@@ -81,29 +67,40 @@
       transform: rotateY(180deg);
     }
     .reverso {
-      background: url('https://i.imgur.com/5x8oyPZ.png') no-repeat center center;
-      background-size: cover;
       background-color: #000;
       color: #FFD700;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .reverso::before {
+      content: "GG";
+    }
+    .inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1s;
+    }
+    .carta.abierta .inner {
+      transform: rotateY(180deg);
     }
     #resultadoFinal {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       color: #00FF00;
-      margin: 20px auto;
+      margin: 15px auto;
       font-weight: bold;
       background: #111;
-      padding: 15px;
+      padding: 10px;
       width: 90%;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #FFD700;
-      position: relative;
-      z-index: 5;
+      border-radius: 8px;
+      box-shadow: 0 0 5px #FFD700;
     }
     .input-section {
       margin-top: 30px;
     }
     input {
-      padding: 0.8rem;
+      padding: 0.7rem;
       font-size: 1rem;
       border-radius: 10px;
       border: 2px solid #555;
@@ -111,7 +108,6 @@
       background-color: #222;
       color: #fff;
       width: 80%;
-      max-width: 300px;
     }
     input.input-error {
       border: 3px solid red;
@@ -121,7 +117,7 @@
       color: black;
       font-size: 1rem;
       font-weight: bold;
-      padding: 0.7rem 1.5rem;
+      padding: 0.6rem 1.2rem;
       border: none;
       border-radius: 10px;
       margin-top: 10px;
@@ -152,30 +148,8 @@
     }
     #footer {
       color: #888;
-      font-size: 0.8rem;
-      margin-top: 40px;
-    }
-
-    /* Partículas de confeti */
-    .confetti {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 10;
-    }
-    .confetti-piece {
-      width: 8px;
-      height: 8px;
-      background-color: #FFD700;
-      position: absolute;
-      animation: fall 3s linear infinite;
-    }
-    @keyframes fall {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(100vh) rotate(360deg); }
+      font-size: 0.75rem;
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -189,11 +163,11 @@
       <button onclick="continuarJuego()">CONTINUAR</button>
     </div>
     <div class="claimTextBox">
-      <div style="font-size: 1.2rem; font-weight: bold;">RED GENESIS</div>
+      <div style="font-size: 1.1rem; font-weight: bold;">RED GENESIS</div>
       <div style="margin: 5px 0;">La única red online de Argentina que te asegura el 100% del premio</div>
       <a class="whatsapp" href="https://hoo.be/redgenesis" target="_blank">📱 CONTACTO</a>
     </div>
-    <div id="footer">Grupo Génesis © 2025. Todos los derechos reservados.</div>
+    <div id="footer">Grupo Génesis © 2025. Todos los derechos reservados. Prohibida su duplicación o distribución sin autorización.</div>
   </div>
 
   <div id="juego" style="display: none;">
@@ -204,19 +178,22 @@
       <div id="userLabel"></div>
     </div>
     <div class="premios">
-      🥇 3 DORADAS → $1.000.000 &nbsp;&nbsp;&nbsp;
-      🥈 3 AZULES → $100.000 &nbsp;&nbsp;&nbsp;
-      🎉 3 VERDES → $10.000 <br>
-      🎯 3 BLANCAS → 50% BONI &nbsp;&nbsp;&nbsp;
-      🎮 3 NEGRAS → 20% BONI &nbsp;&nbsp;&nbsp;
-      🦄 3 NARANJAS → $5.000
+      <span style="display:inline-block;width:14px;height:14px;background:#FFD700;border-radius:3px;margin-right:5px;"></span>
+      3 DORADAS → $1.000.000 &nbsp;&nbsp;
+      <span style="display:inline-block;width:14px;height:14px;background:#3399FF;border-radius:3px;margin-right:5px;"></span>
+      3 AZULES → $100.000 &nbsp;&nbsp;
+      <span style="display:inline-block;width:14px;height:14px;background:#00FF00;border-radius:3px;margin-right:5px;"></span>
+      3 VERDES → $10.000<br>
+      <span style="display:inline-block;width:14px;height:14px;background:#FFFFFF;border:1px solid #555;border-radius:3px;margin-right:5px;"></span>
+      3 BLANCAS → 50% BONI &nbsp;&nbsp;
+      <span style="display:inline-block;width:14px;height:14px;background:#000000;border-radius:3px;margin-right:5px;"></span>
+      3 NEGRAS → 20% BONI &nbsp;&nbsp;
+      <span style="display:inline-block;width:14px;height:14px;background:#FFA500;border-radius:3px;margin-right:5px;"></span>
+      3 NARANJAS → $5.000
     </div>
-
     <div class="tablero" id="tablero"></div>
     <div id="resultadoFinal"></div>
   </div>
-
-  <div class="confetti" id="confettiContainer"></div>
 
   <script>
     const colores = [
@@ -233,15 +210,25 @@
     let resultadoMostrado = false;
     let username = "";
 
-    colores.forEach(c => {
-      for (let i = 0; i < 3; i++) cartas.push({ ...c });
-    });
+    function generarCartasConDoradaYAzul() {
+      let cartasBase = [];
+      colores.forEach(c => {
+        for (let i = 0; i < 3; i++) cartasBase.push({ ...c });
+      });
 
-    cartas = cartas.sort(() => Math.random() - 0.5);
+      while (true) {
+        let mezcla = cartasBase.slice().sort(() => Math.random() - 0.5);
+        let primeras = mezcla.slice(0, 4).map(c => c.nombre);
+        if (primeras.includes("DORADA") && primeras.includes("AZUL")) {
+          return mezcla;
+        }
+      }
+    }
+
+    cartas = generarCartasConDoradaYAzul();
 
     const tablero = document.getElementById("tablero");
-
-    cartas.forEach((carta, index) => {
+    cartas.forEach((carta) => {
       const div = document.createElement("div");
       div.className = "carta";
       div.innerHTML = `
@@ -260,20 +247,20 @@
         document.getElementById("resultadoFinal").innerHTML = "⛔ Ya jugaste hoy. Volvé mañana 😉";
         return;
       }
+
+      localStorage.setItem("juego_caja_sorpresa", hoy);
+
       if (div.classList.contains("abierta") || resultadoMostrado) return;
       div.classList.add("abierta");
       descubiertas.push(carta);
 
       if (descubiertas.length >= 3) {
-        localStorage.setItem("juego_caja_sorpresa", hoy);
         const nombres = descubiertas.map(c => c.nombre);
         const iguales = nombres.filter((v, i, a) => a.indexOf(v) !== i);
         const ganador = colores.find(c => iguales.filter(n => n === c.nombre).length >= 2);
-
-        if (ganador) {
+        if (ganador && ganador.nombre !== "DORADA" && ganador.nombre !== "AZUL") {
           document.getElementById("resultadoFinal").innerHTML = `🎉 <strong>¡GANASTE ${ganador.premio}!</strong> 🎉`;
           resultadoMostrado = true;
-          lanzarConfetti();
         }
       }
     }
@@ -297,19 +284,6 @@
       const fecha = now.toLocaleDateString();
       const hora = now.toLocaleTimeString();
       document.getElementById("fechaHoraActual").innerHTML = `📅 ${fecha} ⏰ ${hora}`;
-    }
-
-    function lanzarConfetti() {
-      const container = document.getElementById("confettiContainer");
-      for (let i = 0; i < 100; i++) {
-        const confetti = document.createElement("div");
-        confetti.className = "confetti-piece";
-        confetti.style.left = Math.random() * 100 + "vw";
-        confetti.style.animationDelay = Math.random() * 2 + "s";
-        confetti.style.backgroundColor = ["#FFD700", "#00FF00", "#3399FF"][Math.floor(Math.random() * 3)];
-        container.appendChild(confetti);
-        setTimeout(() => container.removeChild(confetti), 3000);
-      }
     }
   </script>
 </body>
