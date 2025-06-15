@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAJA SORPRESA - RED GENESIS</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: white;
+      font-family: 'Arial Black', sans-serif;
+      text-align: center;
+    }
+    h1 {
+      color: #FFD700;
+      font-size: 2.2rem;
+      margin: 15px 0 5px;
+    }
+    .subtitulo {
+      color: white;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .premios {
+      font-size: 0.95rem;
+      line-height: 1.5rem;
+      margin-bottom: 16px;
+      padding: 0 5px;
+    }
+    .user-info {
+      display: flex;
+      justify-content: space-around;
+      font-size: 0.9rem;
+      margin: 10px 0 15px;
+      flex-wrap: wrap;
+    }
+    .tablero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 8px;
+      justify-content: center;
+      margin: 0 auto;
+      width: 95vw;
+      max-width: 600px;
+    }
+    .carta {
+      width: 100%;
+      padding-top: 130%;
+      position: relative;
+      perspective: 800px;
+    }
+    .inner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.9s;
+    }
+    .carta.abierta .inner {
+      transform: rotateY(180deg);
+    }
+    .cara {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.95rem;
+      border-radius: 10px;
+      border: 2px solid yellow;
+    }
+    .frente {
+      background: white;
+      color: black;
+      transform: rotateY(180deg);
+    }
+    .reverso {
+      background: url('https://i.imgur.com/5x8oyPZ.png') no-repeat center center;
+      background-size: cover;
+      background-color: #000;
+      color: #FFD700;
+    }
+    #resultadoFinal {
+      font-size: 1.5rem;
+      color: #00FF00;
+      margin: 20px auto;
+      font-weight: bold;
+      background: #111;
+      padding: 15px;
+      width: 90%;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #FFD700;
+      position: relative;
+      z-index: 5;
+    }
+    .input-section {
+      margin-top: 30px;
+    }
+    input {
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 2px solid #555;
+      text-align: center;
+      background-color: #222;
+      color: #fff;
+      width: 80%;
+      max-width: 300px;
+    }
+    input.input-error {
+      border: 3px solid red;
+    }
+    button {
+      background-color: #FFD700;
+      color: black;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+      box-shadow: 2px 2px 6px #00000088;
+    }
+    .claimTextBox {
+      background-color: #fff;
+      color: #000;
+      padding: 1rem;
+      margin: 2rem auto;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 2px 2px 6px #00000088;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+    .whatsapp {
+      background-color: #444;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 0.8rem;
+      font-weight: bold;
+    }
+    #footer {
+      color: #888;
+      font-size: 0.8rem;
+      margin-top: 40px;
+    }
+
+    /* Partículas de confeti */
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .confetti-piece {
+      width: 8px;
+      height: 8px;
+      background-color: #FFD700;
+      position: absolute;
+      animation: fall 3s linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div id="inicio">
+    <h1>RED GENESIS</h1>
+    <div class="subtitulo">CAJA SORPRESA</div>
+    <div class="input-section">
+      <input id="usernameInput" placeholder="INGRESÁ TU USUARIO">
+      <br>
+      <button onclick="continuarJuego()">CONTINUAR</button>
+    </div>
+    <div class="claimTextBox">
+      <div style="font-size: 1.2rem; font-weight: bold;">RED GENESIS</div>
+      <div style="margin: 5px 0;">La única red online de Argentina que te asegura el 100% del premio</div>
+      <a class="whatsapp" href="https://hoo.be/redgenesis" target="_blank">📱 CONTACTO</a>
+    </div>
+    <div id="footer">Grupo Génesis © 2025. Todos los derechos reservados.</div>
+  </div>
+
+  <div id="juego" style="display: none;">
+    <h1>RED GENESIS</h1>
+    <div class="subtitulo">Desbloqueá las cartas... ¡Si hacés 3 iguales ganás!</div>
+    <div class="user-info">
+      <div id="fechaHoraActual"></div>
+      <div id="userLabel"></div>
+    </div>
+    <div class="premios">
+      🥇 3 DORADAS → $1.000.000 &nbsp;&nbsp;&nbsp;
+      🥈 3 AZULES → $100.000 &nbsp;&nbsp;&nbsp;
+      🎉 3 VERDES → $10.000 <br>
+      🎯 3 BLANCAS → 50% BONI &nbsp;&nbsp;&nbsp;
+      🎮 3 NEGRAS → 20% BONI &nbsp;&nbsp;&nbsp;
+      🦄 3 NARANJAS → $5.000
+    </div>
+
+    <div class="tablero" id="tablero"></div>
+    <div id="resultadoFinal"></div>
+  </div>
+
+  <div class="confetti" id="confettiContainer"></div>
+
+  <script>
+    const colores = [
+      { nombre: "DORADA", color: "#FFD700", premio: "$1.000.000" },
+      { nombre: "AZUL", color: "#3399FF", premio: "$100.000" },
+      { nombre: "VERDE", color: "#00FF00", premio: "$10.000" },
+      { nombre: "BLANCA", color: "#FFFFFF", premio: "50% BONI" },
+      { nombre: "NEGRA", color: "#000000", premio: "20% BONI" },
+      { nombre: "NARANJA", color: "#FFA500", premio: "$5.000" }
+    ];
+
+    let cartas = [];
+    let descubiertas = [];
+    let resultadoMostrado = false;
+    let username = "";
+
+    colores.forEach(c => {
+      for (let i = 0; i < 3; i++) cartas.push({ ...c });
+    });
+
+    cartas = cartas.sort(() => Math.random() - 0.5);
+
+    const tablero = document.getElementById("tablero");
+
+    cartas.forEach((carta, index) => {
+      const div = document.createElement("div");
+      div.className = "carta";
+      div.innerHTML = `
+        <div class="inner">
+          <div class="cara frente" style="background:${carta.color};color:${carta.color === '#000000' ? '#fff' : '#000'}">${carta.nombre}</div>
+          <div class="cara reverso"></div>
+        </div>`;
+      div.addEventListener("click", () => girarCarta(div, carta));
+      tablero.appendChild(div);
+    });
+
+    function girarCarta(div, carta) {
+      const hoy = new Date().toISOString().split('T')[0];
+      const ultimaFecha = localStorage.getItem("juego_caja_sorpresa");
+      if (ultimaFecha === hoy) {
+        document.getElementById("resultadoFinal").innerHTML = "⛔ Ya jugaste hoy. Volvé mañana 😉";
+        return;
+      }
+      if (div.classList.contains("abierta") || resultadoMostrado) return;
+      div.classList.add("abierta");
+      descubiertas.push(carta);
+
+      if (descubiertas.length >= 3) {
+        localStorage.setItem("juego_caja_sorpresa", hoy);
+        const nombres = descubiertas.map(c => c.nombre);
+        const iguales = nombres.filter((v, i, a) => a.indexOf(v) !== i);
+        const ganador = colores.find(c => iguales.filter(n => n === c.nombre).length >= 2);
+
+        if (ganador) {
+          document.getElementById("resultadoFinal").innerHTML = `🎉 <strong>¡GANASTE ${ganador.premio}!</strong> 🎉`;
+          resultadoMostrado = true;
+          lanzarConfetti();
+        }
+      }
+    }
+
+    function continuarJuego() {
+      const input = document.getElementById("usernameInput");
+      username = input.value.trim();
+      if (!username) {
+        input.classList.add("input-error");
+        return;
+      }
+      input.classList.remove("input-error");
+      document.getElementById("inicio").style.display = "none";
+      document.getElementById("juego").style.display = "block";
+      document.getElementById("userLabel").innerHTML = `<strong>USUARIO: ${username.toUpperCase()}</strong>`;
+      actualizarFechaHora();
+    }
+
+    function actualizarFechaHora() {
+      const now = new Date();
+      const fecha = now.toLocaleDateString();
+      const hora = now.toLocaleTimeString();
+      document.getElementById("fechaHoraActual").innerHTML = `📅 ${fecha} ⏰ ${hora}`;
+    }
+
+    function lanzarConfetti() {
+      const container = document.getElementById("confettiContainer");
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti-piece";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.animationDelay = Math.random() * 2 + "s";
+        confetti.style.backgroundColor = ["#FFD700", "#00FF00", "#3399FF"][Math.floor(Math.random() * 3)];
+        container.appendChild(confetti);
+        setTimeout(() => container.removeChild(confetti), 3000);
+      }
+    }
+  </script>
+</body>
+</html>
