@@ -19,19 +19,19 @@
     }
     .subtitulo {
       color: white;
-      font-size: 1rem;
+      font-size: 0.85rem;
       margin-bottom: 8px;
     }
     .premios {
-      font-size: 0.9rem;
-      line-height: 1.4rem;
-      margin-bottom: 15px;
-      padding: 0 10px;
+      font-size: 0.7rem;
+      line-height: 1.2rem;
+      margin-bottom: 12px;
+      padding: 0 8px;
     }
     .user-info {
       display: flex;
       justify-content: space-around;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       margin: 5px 0 10px;
     }
     .tablero {
@@ -57,7 +57,7 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       border-radius: 8px;
       border: 2px solid yellow;
     }
@@ -71,9 +71,6 @@
       color: #FFD700;
       font-size: 1.2rem;
       font-weight: bold;
-    }
-    .reverso::before {
-      content: "GG";
     }
     .inner {
       width: 100%;
@@ -167,7 +164,7 @@
       <div style="margin: 5px 0;">La única red online de Argentina que te asegura el 100% del premio</div>
       <a class="whatsapp" href="https://hoo.be/redgenesis" target="_blank">📱 CONTACTO</a>
     </div>
-    <div id="footer">Grupo Génesis © 2025. Todos los derechos reservados. Prohibida su duplicación o distribución sin autorización.</div>
+    <div id="footer">Grupo Génesis © 2025. Todos los derechos reservados.</div>
   </div>
 
   <div id="juego" style="display: none;">
@@ -178,18 +175,12 @@
       <div id="userLabel"></div>
     </div>
     <div class="premios">
-      <span style="display:inline-block;width:14px;height:14px;background:#FFD700;border-radius:3px;margin-right:5px;"></span>
-      3 DORADAS → $1.000.000 &nbsp;&nbsp;
-      <span style="display:inline-block;width:14px;height:14px;background:#3399FF;border-radius:3px;margin-right:5px;"></span>
-      3 AZULES → $100.000 &nbsp;&nbsp;
-      <span style="display:inline-block;width:14px;height:14px;background:#00FF00;border-radius:3px;margin-right:5px;"></span>
-      3 VERDES → $10.000<br>
-      <span style="display:inline-block;width:14px;height:14px;background:#FFFFFF;border:1px solid #555;border-radius:3px;margin-right:5px;"></span>
-      3 BLANCAS → 50% BONI &nbsp;&nbsp;
-      <span style="display:inline-block;width:14px;height:14px;background:#000000;border-radius:3px;margin-right:5px;"></span>
-      3 NEGRAS → 20% BONI &nbsp;&nbsp;
-      <span style="display:inline-block;width:14px;height:14px;background:#FFA500;border-radius:3px;margin-right:5px;"></span>
-      3 NARANJAS → $5.000
+      🟡 3 DORADAS → $1.000.000 &nbsp;&nbsp;
+      🔵 3 AZULES → $100.000 &nbsp;&nbsp;
+      🟢 3 VERDES → $10.000<br>
+      ⚪ 3 BLANCAS → 50% BONI &nbsp;&nbsp;
+      ⚫ 3 NEGRAS → 20% BONI &nbsp;&nbsp;
+      🟠 3 NARANJAS → $5.000
     </div>
     <div class="tablero" id="tablero"></div>
     <div id="resultadoFinal"></div>
@@ -209,19 +200,15 @@
     let descubiertas = [];
     let resultadoMostrado = false;
     let username = "";
+    let bloqueoPorJuego = false;
 
     function generarCartasConDoradaYAzul() {
-      let cartasBase = [];
-      colores.forEach(c => {
-        for (let i = 0; i < 3; i++) cartasBase.push({ ...c });
-      });
-
+      let base = [];
+      colores.forEach(c => { for (let i = 0; i < 3; i++) base.push({ ...c }); });
       while (true) {
-        let mezcla = cartasBase.slice().sort(() => Math.random() - 0.5);
-        let primeras = mezcla.slice(0, 4).map(c => c.nombre);
-        if (primeras.includes("DORADA") && primeras.includes("AZUL")) {
-          return mezcla;
-        }
+        let mezclado = base.slice().sort(() => Math.random() - 0.5);
+        let primeras = mezclado.slice(0, 4).map(c => c.nombre);
+        if (primeras.includes("DORADA") && primeras.includes("AZUL")) return mezclado;
       }
     }
 
@@ -234,23 +221,14 @@
       div.innerHTML = `
         <div class="inner">
           <div class="cara frente" style="background:${carta.color};color:${carta.color === '#000000' ? '#fff' : '#000'}">${carta.nombre}</div>
-          <div class="cara reverso"></div>
+          <div class="cara reverso">GG</div>
         </div>`;
       div.addEventListener("click", () => girarCarta(div, carta));
       tablero.appendChild(div);
     });
 
     function girarCarta(div, carta) {
-      const hoy = new Date().toISOString().split('T')[0];
-      const ultimaFecha = localStorage.getItem("juego_caja_sorpresa");
-      if (ultimaFecha === hoy) {
-        document.getElementById("resultadoFinal").innerHTML = "⛔ Ya jugaste hoy. Volvé mañana 😉";
-        return;
-      }
-
-      localStorage.setItem("juego_caja_sorpresa", hoy);
-
-      if (div.classList.contains("abierta") || resultadoMostrado) return;
+      if (bloqueoPorJuego || div.classList.contains("abierta") || resultadoMostrado) return;
       div.classList.add("abierta");
       descubiertas.push(carta);
 
@@ -260,12 +238,16 @@
         const ganador = colores.find(c => iguales.filter(n => n === c.nombre).length >= 2);
         if (ganador && ganador.nombre !== "DORADA" && ganador.nombre !== "AZUL") {
           document.getElementById("resultadoFinal").innerHTML = `🎉 <strong>¡GANASTE ${ganador.premio}!</strong> 🎉`;
+          localStorage.setItem("juego_caja_sorpresa", new Date().toISOString().split('T')[0]);
+          bloqueoPorJuego = true;
           resultadoMostrado = true;
         }
       }
     }
 
     function continuarJuego() {
+      const hoy = new Date().toISOString().split('T')[0];
+      const ultimaFecha = localStorage.getItem("juego_caja_sorpresa");
       const input = document.getElementById("usernameInput");
       username = input.value.trim();
       if (!username) {
@@ -277,6 +259,12 @@
       document.getElementById("juego").style.display = "block";
       document.getElementById("userLabel").innerHTML = `<strong>USUARIO: ${username.toUpperCase()}</strong>`;
       actualizarFechaHora();
+      setInterval(actualizarFechaHora, 1000);
+
+      if (ultimaFecha === hoy) {
+        document.getElementById("resultadoFinal").innerHTML = "⛔ Ya jugaste hoy. Volvé mañana 😉";
+        bloqueoPorJuego = true;
+      }
     }
 
     function actualizarFechaHora() {
